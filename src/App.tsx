@@ -2,6 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
+import CustomButton from './examples/CustomButton';
+import PersonalizedButtonAndPrompt from './examples/PersonalizedButtonAndPrompt';
+import { If } from './Utils';
+import { Route, Routes } from 'react-router-dom';
+import AuthCallback from './pages/AuthCallback';
 
 export default function App() {
   // set user with userinfo response
@@ -47,53 +52,54 @@ export default function App() {
     gsiClientRef.current = client;
   }, [scriptLoadedSuccessfully]);
 
+  // Use Context in real implementation | it's just a demo
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Hello, React!</h1>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <>
+            <div className="App">
+              <header className="App-header">
+                <img src={logo} className="App-logo" alt="logo" />
+                <h1>Hello, React!</h1>
+                <CustomButton
+                  gsiClientRef={gsiClientRef}
+                  tokenResponse={tokenResponse}
+                  hasGrantedAnyScope={hasGrantedAnyScope}
+                  hasGrantedAllScopes={hasGrantedAllScopes}
+                />
 
-        <If condition={!tokenResponse}>
-          <button
-            onClick={() =>
-              gsiClientRef.current.requestAccessToken({
-                hint: 'BABA',
-                state: 'STATE',
-              })
-            }
-          >
-            Sign in
-          </button>
-        </If>
+                <If condition={!user}>
+                  <PersonalizedButtonAndPrompt
+                    scriptLoadedSuccessfully={scriptLoadedSuccessfully}
+                    hasOneTap
+                    onSignIn={setUser}
+                  />
+                </If>
 
-        <If
-          condition={
-            !hasGrantedAnyScope(
-              'https://www.googleapis.com/auth/calendar.readonly',
-            )
-          }
-        >
-          <button
-            onClick={() =>
-              gsiClientRef.current.requestAccessToken({
-                scope: 'https://www.googleapis.com/auth/calendar.readonly',
-                // prompt: 'consent',
-              })
-            }
-          >
-            Request Calendar Access
-          </button>
-        </If>
+                <If condition={!!user}>
+                  <button
+                    onClick={() => {
+                      window.google?.accounts.id.disableAutoSelect();
+                      setUser(null);
+                    }}
+                  >
+                    Logout
+                  </button>
+                </If>
 
-        <If condition={!!tokenResponse}>
-          <FetchInfoActions tokenResponse={tokenResponse!} />
-        </If>
-
-        <pre style={{ textAlign: 'left', fontSize: 12 }}>
-          {JSON.stringify(tokenResponse, null, 2)}
-        </pre>
-      </header>
-    </div>
+                <pre style={{ textAlign: 'left', fontSize: 12 }}>
+                  {JSON.stringify(tokenResponse, null, 2)}
+                </pre>
+              </header>
+            </div>
+          </>
+        }
+      />
+      <Route path="/auth/callback" element={<AuthCallback />} />
+    </Routes>
   );
 }
 
@@ -119,49 +125,4 @@ function useLoadGsiScript() {
   }, []);
 
   return scriptLoadedSuccessfully;
-}
-
-function FetchInfoActions({ tokenResponse }: { tokenResponse: TokenResponse }) {
-  return (
-    <>
-      <button
-        onClick={() => {
-          axios
-            .get('https://www.googleapis.com/oauth2/v3/tokeninfo', {
-              headers: {
-                Authorization: `Bearer ${tokenResponse.access_token!}`,
-              },
-            })
-            .then(res => res.data)
-            .then(console.log);
-        }}
-      >
-        Fetch tokeninfo
-      </button>
-      <button
-        onClick={() => {
-          axios
-            .get('https://www.googleapis.com/oauth2/v3/userinfo', {
-              headers: {
-                Authorization: `Bearer ${tokenResponse?.access_token}`,
-              },
-            })
-            .then(res => res.data)
-            .then(console.log);
-        }}
-      >
-        Fetch userinfo
-      </button>
-    </>
-  );
-}
-
-function If({
-  condition,
-  children,
-}: {
-  condition: boolean;
-  children: React.ReactNode;
-}) {
-  return condition ? <>{children}</> : null;
 }
