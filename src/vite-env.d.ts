@@ -119,7 +119,16 @@ interface TokenResponse {
   error_uri?: string;
 }
 
-interface CodeClientConfig {
+interface CodeResponse {
+  code: string;
+  scope: string;
+  state?: string;
+  error?: string; // TODO: make a type for ascii errors
+  error_description?: string;
+  error_uri?: string;
+}
+
+interface CodeClientConfig<TResponse> {
   /**
    *  The client ID for your application. You can find this value in the
    *  [API Console](https://console.cloud.google.com/apis/dashboard).
@@ -147,7 +156,7 @@ interface CodeClientConfig {
    * Required for popup UX. The JavaScript function name that handles returned code response.
    * The property will be ignored by the redirect UX
    */
-  callback: (response: TokenResponse) => void;
+  callback: (response: TResponse) => void;
 
   /**
    * 	Optional. Recommended for redirect UX.
@@ -194,7 +203,12 @@ interface Window {
         revoke: (accessToken: string, done: () => void) => void;
       };
       oauth2: {
-        initTokenClient: (config: CodeClientConfig) => {
+        initTokenClient: (config: CodeClientConfig<TokenResponse>) => {
+          requestAccessToken: (
+            overridableClientConfig?: OverridableTokenClientConfig,
+          ) => void;
+        };
+        initCodeClient: (config: CodeClientConfig<CodeResponse>) => {
           requestAccessToken: (
             overridableClientConfig?: OverridableTokenClientConfig,
           ) => void;

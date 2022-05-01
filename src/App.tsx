@@ -7,6 +7,7 @@ import PersonalizedButtonAndPrompt from './examples/PersonalizedButtonAndPrompt'
 import { If } from './Utils';
 import { Route, Routes } from 'react-router-dom';
 import AuthCallback from './pages/AuthCallback';
+import AuthorizationCodeFlow from './examples/AuthorizationCodeFlow';
 
 export default function App() {
   // set user with userinfo response
@@ -64,7 +65,7 @@ export default function App() {
               <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
                 <h1>Hello, React!</h1>
-                <CustomButton
+                {/* <CustomButton
                   gsiClientRef={gsiClientRef}
                   tokenResponse={tokenResponse}
                   hasGrantedAnyScope={hasGrantedAnyScope}
@@ -88,7 +89,11 @@ export default function App() {
                   >
                     Logout
                   </button>
-                </If>
+                </If> */}
+
+                <AuthorizationCodeFlow
+                  scriptLoadedSuccessfully={scriptLoadedSuccessfully}
+                />
 
                 <pre style={{ textAlign: 'left', fontSize: 12 }}>
                   {JSON.stringify(tokenResponse, null, 2)}
