@@ -12,18 +12,18 @@ export default function AuthorizationCodeFlow({
     const client = window.google?.accounts.oauth2.initCodeClient({
       client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
       scope: 'openid profile email',
-      callback: async ({ code }) => {
-        const { data } = await axios.post(
-          'http://localhost:3001/auth/google',
-          {
-            code,
-          },
-          { withCredentials: true },
-        );
-        console.log(data);
-      },
-      // ux_mode: 'redirect',
-      // redirect_uri: 'http://localhost:3001/oauth2callback',
+      // callback: async ({ code }) => {
+      //   const { data } = await axios.post(
+      //     'http://localhost:3001/auth/google',
+      //     {
+      //       code,
+      //     },
+      //     { withCredentials: true },
+      //   );
+      //   console.log(data);
+      // },
+      ux_mode: 'redirect',
+      redirect_uri: 'http://localhost:3001/oauth2callback',
     });
 
     gsiClientRef.current = client;

@@ -22,12 +22,13 @@ export default function PersonalizedButtonAndPrompt({
       },
       auto_select: true, // auto sign in
       // login_uri: '<backend login with google handler>', // post request
+      // login_uri: 'http://localhost:3001/oauth2callback',
       // ux_mode: 'redirect',
     });
 
     window.google?.accounts.id.renderButton(
       btnContainerRef.current!,
-      { type: 'standard', theme: 'outline', size: 'medium' }, // customization attributes
+      { type: 'standard', theme: 'outline', size: 'large' }, // customization attributes
     );
 
     if (hasOneTap) window.google?.accounts.id.prompt();

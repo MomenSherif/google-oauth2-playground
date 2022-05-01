@@ -156,7 +156,7 @@ interface CodeClientConfig<TResponse> {
    * Required for popup UX. The JavaScript function name that handles returned code response.
    * The property will be ignored by the redirect UX
    */
-  callback: (response: TResponse) => void;
+  callback?: (response: TResponse) => void;
 
   /**
    * 	Optional. Recommended for redirect UX.

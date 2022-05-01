@@ -65,7 +65,7 @@ export default function App() {
               <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
                 <h1>Hello, React!</h1>
-                {/* <CustomButton
+                <CustomButton
                   gsiClientRef={gsiClientRef}
                   tokenResponse={tokenResponse}
                   hasGrantedAnyScope={hasGrantedAnyScope}
@@ -89,7 +89,7 @@ export default function App() {
                   >
                     Logout
                   </button>
-                </If> */}
+                </If>
 
                 <AuthorizationCodeFlow
                   scriptLoadedSuccessfully={scriptLoadedSuccessfully}
